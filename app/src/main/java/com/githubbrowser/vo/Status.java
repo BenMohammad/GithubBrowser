@@ -1,4 +1,8 @@
 package com.githubbrowser.vo;
 
-public class Status {
+public enum Status {
+
+    SUCCESS,
+    ERROR,
+    LOADING
 }
