@@ -6,15 +6,19 @@ import android.text.format.Time;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
 
 import com.githubbrowser.AppExecutors;
 import com.githubbrowser.api.ApiResponse;
 import com.githubbrowser.api.GithubService;
+import com.githubbrowser.api.RepoSearchResponse;
 import com.githubbrowser.db.GithubDb;
 import com.githubbrowser.db.RepoDao;
+import com.githubbrowser.util.AbsentLiveData;
 import com.githubbrowser.util.RateLimiter;
 import com.githubbrowser.vo.Contributor;
 import com.githubbrowser.vo.Repo;
+import com.githubbrowser.vo.RepoSearchResult;
 import com.githubbrowser.vo.Resource;
 
 import java.util.List;
@@ -135,5 +139,65 @@ public class RepoRepository {
                 return githubService.getContributors(owner, name);
             }
         }.asLiveData();
+    }
+
+    public LiveData<Resource<Boolean>> searchNextPage(String query) {
+        FetchNextSearchPageTask fetchNextSearchPageTask = new FetchNextSearchPageTask(
+                query, githubService, db);
+        appExecutors.networkIO().execute(fetchNextSearchPageTask);
+        return fetchNextSearchPageTask.getLiveData();
+    }
+
+    public LiveData<Resource<List<Repo>>> search(String query) {
+        return new NetworkBoundResource<List<Repo>, RepoSearchResponse>(appExecutors) {
+            @Override
+            protected void saveCallResult(@NonNull RepoSearchResponse item) {
+                List<Integer> repoIds = item.getRepoIds();
+                RepoSearchResult repoSearchResult = new RepoSearchResult(
+                        query, repoIds, item.getTotal(), item.getNextPage());
+                db.beginTransaction();
+                try {
+                    repoDao.insertRepos(item.getItems());
+                    repoDao.insert(repoSearchResult);
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<Repo> data) {
+                return data == null;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<List<Repo>> loadFromDb() {
+                return Transformations.switchMap(repoDao.search(query), searchData -> {
+                    if(searchData == null) {
+                        return AbsentLiveData.create();
+                    } else {
+                        return repoDao.loadOrdered(searchData.repoIds);
+
+                    }
+                });
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<ApiResponse<RepoSearchResponse>> createCall() {
+                return githubService.searchRepos(query);
+            }
+
+            @Override
+            protected RepoSearchResponse processResponse(ApiResponse<RepoSearchResponse> response) {
+                RepoSearchResponse body = response.body;
+                if(body != null) {
+                    body.setNextPage(response.getNextPage());
+                }
+                return body;
+            }
+        }.asLiveData();
+
     }
 }

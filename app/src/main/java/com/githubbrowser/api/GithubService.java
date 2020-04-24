@@ -29,7 +29,7 @@ public interface GithubService {
     LiveData<ApiResponse<List<Contributor>>> getContributors(@Path("owner") String owner, @Path("name") String name);
 
     @GET("search/repositories")
-    LiveData<ApiResponse<RepoSearchResult>> searchRepos(@Query("q") String query);
+    LiveData<ApiResponse<RepoSearchResponse>> searchRepos(@Query("q") String query);
 
     @GET("search/repositories")
     Call<RepoSearchResponse> searchRepos(@Query("q") String query, @Query("page") int page);
