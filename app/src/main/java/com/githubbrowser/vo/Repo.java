@@ -33,13 +33,14 @@ public class Repo {
     @NonNull
     public final Owner owner;
 
-    public Repo(int id, @NonNull String name, String fullName, String description, int stars, @NonNull Owner owner) {
+    public Repo(int id, @NonNull String name, String fullName, String description,  @NonNull Owner owner, int stars) {
         this.id = id;
         this.name = name;
         this.fullName = fullName;
         this.description = description;
-        this.stars = stars;
         this.owner = owner;
+        this.stars = stars;
+
     }
 
     public static class Owner {
