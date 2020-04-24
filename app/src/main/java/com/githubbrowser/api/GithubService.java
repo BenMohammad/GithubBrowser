@@ -32,5 +32,5 @@ public interface GithubService {
     LiveData<ApiResponse<RepoSearchResult>> searchRepos(@Query("q") String query);
 
     @GET("search/repositories")
-    Call<RepoSearchResult> searchRepos(@Query("q") String query, @Query("page") int page);
+    Call<RepoSearchResponse> searchRepos(@Query("q") String query, @Query("page") int page);
 }
