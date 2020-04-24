@@ -24,7 +24,7 @@ public class Resource<T> {
         return new Resource<>(Status.SUCCESS, data, null);
     }
 
-    public static <T> Resource<T> error(@Nullable T data, @Nullable String msg) {
+    public static <T> Resource<T> error( @Nullable String msg, @Nullable T data) {
         return new Resource<>(Status.ERROR, data, msg);
     }
 
