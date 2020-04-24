@@ -42,6 +42,7 @@ public class RepoSearchResponse {
         this.nextPage = nextPage;
     }
 
+
     @NonNull
     public List<Integer> getRepoIds() {
         List<Integer> repoIds = new ArrayList<>();
