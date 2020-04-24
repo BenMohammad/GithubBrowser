@@ -23,4 +23,5 @@ public class FragmentBindingAdapters {
     public void bindImage(ImageView imageView, String url) {
         Glide.with(fragment).load(url).into(imageView);
 
-    }}
+    }
+}
