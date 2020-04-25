@@ -7,8 +7,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
+import com.githubbrowser.databinding.RepoItemBinding;
 import com.githubbrowser.repository.RepoRepository;
 import com.githubbrowser.util.AbsentLiveData;
+import com.githubbrowser.util.Objects;
 import com.githubbrowser.vo.Contributor;
 import com.githubbrowser.vo.Repo;
 import com.githubbrowser.vo.Resource;
@@ -54,6 +56,15 @@ public class RepoViewModel extends ViewModel {
         if(current != null && !current.isEmpty()) {
             repoId.setValue(current);
         }
+    }
+
+    @VisibleForTesting
+    public void setId(String owner, String name) {
+        RepoId update = new RepoId(owner, name);
+        if(Objects.equals(repoId.getValue(), update)){
+            return;
+        }
+        repoId.setValue(update);
     }
 
     @VisibleForTesting

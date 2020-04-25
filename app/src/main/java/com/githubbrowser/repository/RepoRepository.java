@@ -39,6 +39,7 @@ public class RepoRepository {
 
     private RateLimiter<String> repoListRateLimit = new RateLimiter<>(10, TimeUnit.MINUTES);
 
+    @Inject
     public RepoRepository(GithubDb db, RepoDao repoDao, GithubService githubService, AppExecutors appExecutors) {
         this.db = db;
         this.repoDao = repoDao;

@@ -13,11 +13,11 @@ import com.githubbrowser.vo.Repo;
 
 public class RepoListAdapter extends DataBoundListAdapter<Repo, RepoItemBinding> {
 
-    private final androidx.databinding.DataBindingComponent dataBindingComponent;
+    private final DataBindingComponent dataBindingComponent;
     private final RepoClickCallback repoClickCallback;
     private final boolean showFullName;
 
-    public RepoListAdapter(DataBindingComponent dataBindingComponent, RepoClickCallback repoClickCallback, boolean showFullName) {
+    public RepoListAdapter(DataBindingComponent dataBindingComponent, boolean showFullName, RepoClickCallback repoClickCallback) {
         this.dataBindingComponent = dataBindingComponent;
         this.repoClickCallback = repoClickCallback;
         this.showFullName = showFullName;
@@ -44,8 +44,8 @@ public class RepoListAdapter extends DataBoundListAdapter<Repo, RepoItemBinding>
     }
 
     @Override
-    protected boolean areItemsTheSame(Repo oldItem, Repo NewItem) {
-        return Objects.equals(oldItem.owner, NewItem.owner) && Objects.equals(oldItem.name, NewItem.name);
+    protected boolean areItemsTheSame(Repo oldItem, Repo newItem) {
+        return Objects.equals(oldItem.owner, newItem.owner) && Objects.equals(oldItem.name, newItem.name);
     }
 
     @Override
